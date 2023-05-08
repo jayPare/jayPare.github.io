@@ -1,0 +1,9 @@
+[submodule "lib/csv"]
+	path = lib/csv
+	url = https://github.com/vanillaes/csv.git
+[submodule "lib/Woocommerce-US-ZipCodes-TaxRates"]
+	path = lib/Woocommerce-US-ZipCodes-TaxRates
+	url = https://github.com/MirzaAreebBaig/Woocommerce-US-ZipCodes-TaxRates.git
+[submodule "lib/jquery-csv"]
+	path = lib/jquery-csv
+	url = https://github.com/evanplaice/jquery-csv.git
