@@ -38,7 +38,9 @@
     </style>
     <title>Discogs Fee Calculator</title>
   </head>
-  <body onload="loadCSV('lib/Woocommerce-US-ZipCodes-TaxRates/tax_rates.csv');">
+  <body
+    onload="loadCSV('lib/Woocommerce-US-ZipCodes-TaxRates/tax_rates.csv'); setCountryDD();"
+  >
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <button
         class="navbar-toggler"
@@ -63,12 +65,13 @@
     >
       <div class="mb-3">
         <label class="font-weight-bold" for="inputItemPrice"
-          >Item Price (CAD)</label
+          >Item Price (CAD or USD)</label
         >
         <input
           required
           type="number"
           step="0.01"
+          min="0"
           class="form-control"
           id="inputItemPrice"
           aria-describedby=""
@@ -76,16 +79,32 @@
         />
       </div>
       <div class="mb-3">
-        <label for="inputShippingPrice">Shipping Price (CAD)</label>
+        <label for="inputShippingPrice">Shipping Price (CAD or USD)</label>
         <input
           required
           type="number"
           step="0.01"
+          min="0"
           class="form-control"
           id="inputShippingPrice"
           aria-describedby=""
           placeholder="Enter shipping price"
         />
+      </div>
+      <div class="mb-3">
+        <label for="sourceCountry">You Country</label>
+        <select
+          class="form-select form-select-md"
+          aria-label=".form-select-md example"
+          required
+          id="ddlSource"
+        >
+          <option selected disabled value="" style="color: gray">
+            Your Country
+          </option>
+          <option value="United States">United States</option>
+          <option value="Canada">Canada</option>
+        </select>
       </div>
       <div class="mb-3">
         <label for="destination">Destination Country</label>
@@ -99,6 +118,7 @@
           <option selected disabled value="" style="color: gray">
             Destination Country
           </option>
+          <option value="United States">United States</option>
           <option value="Austria">Austria</option>
           <option value="Belgium">Belgium</option>
           <option value="Bulgaria">Bulgaria</option>
@@ -128,7 +148,6 @@
           <option value="Spain">Spain</option>
           <option value="Sweden">Sweden</option>
           <option value="United Kingdom">United Kingdom</option>
-          <option value="United States">United States</option>
         </select>
       </div>
       <div id="zipCodeFormGroup" class="mb-3 d-none">
@@ -183,14 +202,18 @@
   <footer class="mt-4 mx-3">
     <div class="col-xs-12 col-sm-12">
       <div class="alert alert-info" role="alert">
-        <b>Info:</b> Currently, only shipping from Canada, with CAD$ currency is
-        supported. Stay tuned for more origin country and other currency
-        support.
+        <b>Info:</b> Currently, only shipping from Canada or United States, with
+        CAD or USD currencies are supported. Stay tuned for more origin country
+        and other currency support.
       </div>
       <div class="alert alert-warning" role="alert">
         <b>Disclamer:</b> This tool is provided solely for reference purpose. It
         is no in any case related to Discogs.com, neither to Paypal. Amount
-        calculated are not guaranteed and are only provided to help.
+        calculated are not guaranteed and are only provided to help. However, if
+        you don't get the amount calculated, you can file a bug
+        <a href="https://github.com/jayPare/jayPare.github.io/issues/new/choose"
+          >here</a
+        >.
       </div>
     </div>
   </footer>

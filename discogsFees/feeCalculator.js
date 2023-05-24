@@ -50,152 +50,121 @@ function calculateTax(item) {
   switch (item.destination) {
     case "Austria":
       item.taxRate = 0.2;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Belgium":
       item.taxRate = 0.21;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Bulgaria":
       item.taxRate = 0.2;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Canada":
       item.taxRate = 0.0;
-      item.suppPpFeeRate = 0.0;
       break;
 
     case "Croatia":
       item.taxRate = 0.25;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Cyprus":
       item.taxRate = 0.25;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Czech Republic":
       item.taxRate = 0.21;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Denmark":
       item.taxRate = 0.25;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Estonia":
       item.taxRate = 0.2;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Finland":
       item.taxRate = 0.24;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "France":
       item.taxRate = 0.2;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Germany":
       item.taxRate = 0.19;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Greece":
       item.taxRate = 0.24;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Hungary":
       item.taxRate = 0.27;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Ireland":
       item.taxRate = 0.23;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Italy":
       item.taxRate = 0.22;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Latvia":
       item.taxRate = 0.21;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Lithuania":
       item.taxRate = 0.21;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Luxembourg":
       item.taxRate = 0.16;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Malta":
       item.taxRate = 0.18;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Netherlands":
       item.taxRate = 0.21;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Poland":
       item.taxRate = 0.23;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Portugal":
       item.taxRate = 0.23;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Romania":
       item.taxRate = 0.19;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Slovakia":
       item.taxRate = 0.2;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Slovenia":
       item.taxRate = 0.22;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Spain":
       item.taxRate = 0.21;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "Sweden":
       item.taxRate = 0.25;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "United Kingdom":
       item.taxRate = 0.2;
-      item.suppPpFeeRate = 0.01;
       break;
 
     case "United States":
-      item.suppPpFeeRate = 0.008;
-
       usTaxes(item);
       break;
 
@@ -224,6 +193,34 @@ function loadCSV(url) {
   }
 }
 
+function setCountryDD() {
+  fetch("https://api.ipregistry.co/?key=y63j7gejdjdze6uk")
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (payload) {
+      var select = document.querySelector("#destination");
+      var optionLabels = Array.from(select.options).map((opt) => opt.value);
+      if (optionLabels.includes(payload.location.country.name)) {
+        var option =
+          select.options[optionLabels.indexOf(payload.location.country.name)];
+
+        select.removeChild(option);
+        select.insertBefore(option, select.childNodes[2]);
+      }
+
+      select = document.querySelector("#ddlSource");
+      optionLabels = Array.from(select.options).map((opt) => opt.value);
+      if (optionLabels.includes(payload.location.country.name)) {
+        option =
+          select.options[optionLabels.indexOf(payload.location.country.name)];
+
+        select.removeChild(option);
+        select.insertBefore(option, select.childNodes[2]);
+      }
+    });
+}
+
 function state_Change() {
   // if xmlhttp shows "loaded"
   if (xmlhttp.readyState == 4) {
@@ -234,6 +231,48 @@ function state_Change() {
     } else {
       alert("Problem retrieving CSV file");
     }
+  }
+}
+
+function setPpFees(item) {
+  switch (item.source) {
+    case "Canada":
+      item.ppFeeRate = 0.029;
+      item.ppFixedFees = 0.3;
+      break;
+
+    case "United States":
+      item.ppFeeRate = 0.0349;
+      item.ppFixedFees = 0.3;
+      break;
+
+    default:
+      break;
+  }
+}
+
+function setSupFees(item) {
+  switch (item.source) {
+    case "Canada":
+      if (item.destination == "Canada") {
+        item.suppPpFeeRate = 0.0;
+      } else if (item.destination == "United-States") {
+        item.suppPpFeeRate = 0.008;
+      } else {
+        item.suppPpFeeRate = 0.01;
+      }
+      break;
+
+    case "United States":
+      if (item.destination == "United-States") {
+        item.suppPpFeeRate = 0.0;
+      } else {
+        item.suppPpFeeRate = 0.015;
+      }
+      break;
+
+    default:
+      break;
   }
 }
 
@@ -335,6 +374,7 @@ function calculateFees() {
   var item = {
     itemPrice: Number(document.getElementById("inputItemPrice").value),
     shippingPrice: Number(document.getElementById("inputShippingPrice").value),
+    source: document.getElementById("ddlSource").value,
     destination: document.getElementById("destination").value,
     zipCode: document.getElementById("zipCode").value,
     discogsTotal: 0.0,
@@ -368,8 +408,7 @@ function calculateFees() {
     item.itemPrice + item.shippingPrice + item.taxes
   );
 
-  item.ppFeeRate = 0.029;
-  item.ppFixedFees = 0.3;
+  setPpFees(item);
   console.log("\n\n\nPaypal %: %f\n", item.ppFeeRate + item.suppPpFeeRate);
   item.paypalFee =
     (item.itemPrice + item.shippingPrice + item.taxes) *
