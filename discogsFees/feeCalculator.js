@@ -1,8 +1,87 @@
-//TODO: Add support for:
-// Brazil
+//TODO: Double check if those country are really not supported, can't find them on Paypal
+// "Aland Islands"
+// "AF", "Afghanistan"
+// "AX", "Aland Islands"
+// "AS", "American Samoa"
+// "AQ", "Antarctica"
+// "IO", "British Indian Ocean Territory"
+// "CF", "Central African Republic"
+// "CX", "Christmas Island"
+// "CC", "Cocos Islands"
+// "CU", "Cuba"
+// "CW", "Curacao"
+// "TL", "East Timor"
+// "GQ", "Equatorial Guinea"
+// "GH", "Ghana"
+// "GI", "Gibraltar"
+// "GU", "Guam"
+// "GG", "Guernsey"
+// "GN", "Guinea"
+// "HT", "Haiti"
+// "ID", "India"
+// "IR", "Iran"
+// "IQ", "Iraq"
+// "IM", "Isle Of Man"
+// "JE", "Jersey"
+// "XK", "Kosovo"
+// "LB", "Lebanon"
+// "LR", "Liberia"
+// "LY", "Libya"
+// "MO", "Macau"
+// "YT", "Mayotte"
+// "MM", "Myanmar"
+// "MP", "Northern Mariana Islands"
+// "KP", "North Korea"
+// "PK", "Pakistan"
+// "PS", "Palestine"
+// "PR", "Puerto Rico"
+// "BL", "Saint Barthelemy"
+// "MF", "Saint Martin"
+// "SX", "Sint Maarten"
+// "SS", "South Sudan"
+// "SD", "Sudan"
+// "SY", "Syria"
+// "TK", "Tokelau"
+// "TR", "Turkey"
+// "VI", "U.S. Virgin Islands"
+// "UZ", "Uzbekistan"
+// "VA", "Vatican"
+// "VE", "Vietnam"
+// "EH", "Western Sahara"
+// "VA", "Vatican"
 
-//TODO: Replace $ with actual currency in breakdown.
 //TODO: Fill ddl with JS instead of 3495493429 options in HTML.
+
+//TODO: Add support for AU GST and NZ GST.
+
+//TODO: Add following countries support:
+//code: "AU", name: "Australia"
+//code: "CN", name: "China"
+//code: "HK", name: "Hong Kong"
+//code: "IL", name: "Israel"
+//code: "JP", name: "Japan"
+//code: "MX", name: "Mexico"
+//code: "RU", name: "Russia"
+//code: "KR", name: "South Korea"
+//code: "CH", name: "Switzerland"
+//code: "TW", name: "Taiwan"
+//code: "TH", name: "Thailand"
+//code: "GB", name: "United Kingdom"
+
+const currencySymbol = {
+  USD: "$",
+  GBP: "£",
+  EUR: "€",
+  CAD: "CA$",
+  AUD: "A$",
+  JPY: "JP¥",
+  CHF: "CHF",
+  MXN: "MX$",
+  BRL: "R$",
+  NZD: "NZ$",
+  SEK: "SEK",
+  DKK: "DDK",
+};
 
 const eeaCountries = [
   "Austria",
@@ -15,11 +94,9 @@ const eeaCountries = [
   "Estonia",
   "Finland",
   "France",
-  //TODO: Add support
   "French Guiana",
   "Germany",
   "Greece",
-  //TODO: Add support
   "Guadeloupe",
   "Hungary",
   "Iceland",
@@ -30,16 +107,14 @@ const eeaCountries = [
   "Lithuania",
   "Luxembourg",
   "Malta",
-  //TODO: Add support
   "Martinique",
-  //TODO: Add support
+  // TODO: Need to add support.
   "Mayotte",
   "Monaco",
   "Netherlands",
   "Norway",
   "Poland",
   "Portugal",
-  //TODO: Add support
   "Reunion",
   "Romania",
   "San Marino",
@@ -47,8 +122,8 @@ const eeaCountries = [
   "Slovenia",
   "Spain",
   "Sweden",
-  //TODO: Add Support
-  "Vatican City State",
+  // TODO: Need to add support.
+  "Vatican",
 ];
 
 ukCountries = [
@@ -59,6 +134,51 @@ ukCountries = [
   //TODO:"Add Support"
   "Jersey",
   "United Kingdom",
+];
+
+const europeI = [
+  "Austria",
+  "Belgium",
+  // TODO: Add support
+  "Channel Islands",
+  "Cyprus",
+  "Estonia",
+  "France",
+  "French Guiana",
+  "Guadeloupe",
+  "Martinique",
+  "Reunion",
+  "Mayotte",
+  "Germany",
+  "Gibraltar",
+  "Greece",
+  "Ireland",
+  "Isle Of Man",
+  "Italy",
+  "Luxembourg",
+  "Malta",
+  "Monaco",
+  "Montenegro",
+  "Netherlands",
+  "Portugal",
+  "San Marino",
+  "Slovakia",
+  "Slovenia",
+  "Spain",
+  "United Kingdom",
+  "Vatican",
+];
+
+const northernEurope = [
+  // TODO: Add support
+  "Aland Islands",
+  "Denmark",
+  "Faroe Islands",
+  "Finland",
+  "Greenland",
+  "Iceland",
+  "Norway",
+  "Sweden",
 ];
 
 const allOtherPPCountry = [
@@ -100,8 +220,8 @@ const allOtherPPCountry = [
   "Costa Rica",
   "Croatia",
   "Democratic Republic of the Congo",
-  "Dominica",
   "Djibouti",
+  "Dominica",
   "Dominican Republic",
   "Ecuador",
   "Egypt",
@@ -110,7 +230,6 @@ const allOtherPPCountry = [
   "Ethiopia",
   "Falkland Islands",
   "Faroe Islands",
-  "Micronesia",
   "Fiji",
   "French Polynesia",
   "Gabon",
@@ -141,10 +260,11 @@ const allOtherPPCountry = [
   "Maldives",
   "Mali",
   "Marshall Islands",
-  "Monaco",
   "Mauritania",
   "Mauritius",
+  "Micronesia",
   "Moldova",
+  "Monaco",
   "Mongolia",
   "Montenegro",
   "Montserrat",
@@ -330,7 +450,6 @@ function calculateTax(item) {
 }
 
 function setDdlColor(element) {
-  console.log(countryCodes.countryToCode("Saint Kitts ANd Nevis"));
   element.style.color = "#212529";
 }
 
@@ -356,22 +475,21 @@ function setCountryDdl() {
       return response.json();
     })
     .then(function (payload) {
+      // In Your Country(ddlDestination) drop down list.
       var select = document.querySelector("#ddlDestination");
       var optionLabels = Array.from(select.options).map((opt) => opt.value);
       if (optionLabels.includes(payload.location.country.name)) {
         var option =
           select.options[optionLabels.indexOf(payload.location.country.name)];
-
         select.removeChild(option);
         select.insertBefore(option, select.childNodes[2]);
       }
-
+      // In Destination Country(ddlSource) drop down list.
       select = document.querySelector("#ddlSource");
       optionLabels = Array.from(select.options).map((opt) => opt.value);
       if (optionLabels.includes(payload.location.country.name)) {
         option =
           select.options[optionLabels.indexOf(payload.location.country.name)];
-
         select.removeChild(option);
         select.insertBefore(option, select.childNodes[2]);
       }
@@ -390,325 +508,301 @@ function state_Change() {
   }
 }
 
-function setOtherCountriesFixedFees(item) {
-  switch (item.source) {
-    // See: https://www.paypal.com/ki/webapps/mpp/merchant-fees
-    //AUD
-    case "Kiribati":
-    case "Nauru":
-    case "Norfolk Island":
-    case "Tuvalu":
-    //USD
-    case "British Virgin Islands":
-    case "Ecuador":
-    case "Marshall Islands":
-    case "Micronesia":
-    case "Palau":
-    case "Samoa":
-    case "Turks & Caicos Islands":
-      item.ppFixedFees = 0.3;
+function setPaypalFixedFees(item) {
+  country = item.source;
+
+  if (allOtherPPCountry.includes(item.source)) country = "otherCountries";
+
+  switch (country) {
+    case "Canada":
+    // See: https://www.paypal.com/ca/webapps/mpp/merchant-fees
+    case "Austria":
+    // See: https://www.paypal.com/at/webapps/mpp/merchant-fees
+    case "Belgium":
+    // See: https://www.paypal.com/be/webapps/mpp/merchant-fees
+    case "Brazil":
+    // See: https://www.paypal.com/br/webapps/mpp/merchant-fees
+    case "Denmark":
+    // See: https://www.paypal.com/dk/webapps/mpp/merchant-fees
+    case "Finland":
+    // See: https://www.paypal.com/fi/webapps/mpp/merchant-fees
+    case "Luxembourg":
+    // See: https://www.paypal.com/lu/webapps/mpp/merchant-fees
+    case "Netherlands":
+    // See: https://www.paypal.com/nl/webapps/mpp/merchant-fees
+    case "Norway":
+    // See: https://www.paypal.com/no/webapps/mpp/merchant-fees
+    case "Poland":
+    // See: https://www.paypal.com/pl/webapps/mpp/merchant-fees
+    case "Sweden":
+    // See: https://www.paypal.com/se/webapps/mpp/merchant-fees
+    case "otherCountries":
+      // See: https://www.paypal.com/ki/webapps/mpp/merchant-fees
+      switch (item.currency) {
+        case "USD":
+        case "AUD":
+        case "CAD":
+          item.ppFixedFees = 0.3;
+          break;
+
+        case "GBP":
+          item.ppFixedFees = 0.2;
+          break;
+
+        case "EUR":
+          item.ppFixedFees = 0.35;
+          break;
+
+        case "JPY":
+          item.ppFixedFees = 40.0;
+          break;
+
+        case "CHF":
+          item.ppFixedFees = 0.55;
+          break;
+
+        case "MXN":
+          item.ppFixedFees = 4.0;
+          break;
+
+        case "BRL":
+          item.ppFixedFees = 0.6;
+          break;
+
+        case "NZD":
+          item.ppFixedFees = 0.45;
+          break;
+
+        case "SEK":
+          item.ppFixedFees = 3.25;
+          break;
+
+        case "DKK":
+          item.ppFixedFees = 2.6;
+          break;
+
+        default:
+          alert(
+            "Selected currency for " +
+              item.source +
+              " as source country is not supported. Please file a bug, this shouldn't happen."
+          );
+          item.ppFixedFees = 0.0;
+          break;
+      }
       break;
 
-    //EUR
-    case "Andorra":
-    case "Croatia":
-    case "Monaco":
-    case "Montenegro":
-    case "Saint Pierre & Miquelon":
-      item.ppFixedFees = 0.35;
+    case "France":
+    case "French Guiana":
+    case "Guadeloupe":
+    case "Martinique":
+    case "Reunion":
+    //  https://www.paypal.com/fr/webapps/mpp/merchant-fees#domestic
+
+    case "Hungary":
+    //  https://www.paypal.com/hu/webapps/mpp/merchant-fees#domestic
+    case "Ireland":
+    //  https://www.paypal.com/ie/webapps/mpp/merchant-fees#domestic
+    case "Italy":
+    //  https://www.paypal.com/it/webapps/mpp/merchant-fees#domestic
+    case "Portugal":
+    // https://www.paypal.com/pt/webapps/mpp/merchant-fees
+
+    // TODO: Need to double check.
+    case "Spain":
+    // https://www.paypal.com/es/webapps/mpp/merchant-fees
+
+    // All countries below have the same Paypal fees.
+    // See: https://www.paypal.com/bg/webapps/mpp/merchant-fees
+    case "Bulgaria":
+    case "Cyprus":
+    case "Czech Republic":
+    case "Estonia":
+    case "Greece":
+    case "Latvia":
+    case "Liechtenstein":
+    case "Lithuania":
+    case "Malta":
+    case "Romania":
+    case "San Marino":
+    case "Slovakia":
+    case "Slovenia":
+      switch (item.currency) {
+        case "USD":
+        case "AUD":
+        case "CAD":
+        case "GBP":
+          item.ppFixedFees = 0.3;
+          break;
+
+        case "EUR":
+          item.ppFixedFees = 0.35;
+          break;
+
+        case "JPY":
+          item.ppFixedFees = 40.0;
+          break;
+
+        case "CHF":
+          item.ppFixedFees = 0.55;
+          break;
+
+        case "MXN":
+          item.ppFixedFees = 4.0;
+          break;
+
+        case "BRL":
+          item.ppFixedFees = 0.6;
+          break;
+
+        case "NZD":
+          item.ppFixedFees = 0.45;
+          break;
+
+        case "SEK":
+          item.ppFixedFees = 3.25;
+          break;
+
+        case "DKK":
+          item.ppFixedFees = 2.6;
+          break;
+
+        default:
+          alert(
+            "Selected currency for " +
+              item.source +
+              " as source country is not supported. Please file a bug, this shouldn't happen."
+          );
+          item.ppFixedFees = 0.0;
+          break;
+      }
       break;
 
-    //DKK
-    case "Faroe Islands":
-    case "Greenland":
-      item.ppFixedFees = 2.6;
+    case "United States":
+      // See: https://www.paypal.com/us/webapps/mpp/merchant-fees
+      switch (item.currency) {
+        case "USD":
+          item.ppFixedFees = 0.3;
+          break;
+
+        case "GBP":
+          item.ppFixedFees = 0.39;
+          break;
+
+        case "EUR":
+          item.ppFixedFees = 0.39;
+          break;
+
+        case "CAD":
+        case "AUD":
+          item.ppFixedFees = 0.59;
+          break;
+
+        case "JPY":
+          item.ppFixedFees = 49.0;
+          break;
+
+        case "CHF":
+          item.ppFixedFees = 0.49;
+          break;
+
+        case "MXN":
+          item.ppFixedFees = 9.0;
+          break;
+
+        case "BRL":
+          item.ppFixedFees = 2.9;
+          break;
+
+        case "NZD":
+          item.ppFixedFees = 0.69;
+          break;
+
+        case "SEK":
+          item.ppFixedFees = 4.09;
+          break;
+
+        case "DKK":
+          item.ppFixedFees = 2.9;
+          break;
+
+        default:
+          alert(
+            "Selected currency for " +
+              item.source +
+              " as source country is not supported. Please file a bug, this shouldn't happen."
+          );
+          item.ppFixedFees = 0.0;
+          break;
+      }
       break;
 
-    //NZD
-    case "Cook Islands":
-    case "New Zealand":
-    case "Niue":
-    case "Pitcairn":
-      item.ppFixedFees = 0.45;
-      break;
+    // TODO: Need to double check.
+    case "Germany":
+      // See: https://www.paypal.com/de/webapps/mpp/merchant-fees
+      switch (item.currency) {
+        case "USD":
+          item.ppFixedFees = 0.49;
+          break;
 
-    //MYR
-    case "Malaysia":
-      item.ppFixedFees = 2.0;
-      break;
+        case "GBP":
+          item.ppFixedFees = 0.29;
+          break;
 
-    // PHP
-    case "Philippines":
-      item.ppFixedFees = 15.0;
-      break;
+        case "EUR":
+          item.ppFixedFees = 0.39;
+          break;
 
-    //SGD
-    case "Singapore":
-      item.ppFixedFees = 0.5;
-      break;
+        case "CAD":
+        case "AUD":
+          item.ppFixedFees = 0.59;
+          break;
 
-    //NOK
-    case "Svalbard & Jan Mayen":
-      item.ppFixedFees = 2.8;
-      break;
+        case "JPY":
+          item.ppFixedFees = 49.0;
+          break;
 
-    /* Currency not supported by Paypal. Need to find out which currency people
-     * from those countries are using.
-     */
-    //ALL
-    case "Albania":
-    //DZD
-    case "Algeria":
-    //AOA
-    case "Angola":
-    //XCD
-    case "Anguilla":
-    //XCD
-    case "Antigua & Barbuda":
-    //ARS
-    case "Argentina":
-    //AMD
-    case "Armenia":
-    // AWG
-    case "Aruba":
-    // AZN
-    case "Azerbaijan Republic":
-    // BSD
-    case "Bahamas":
-    // BHD
-    case "Bahrain":
-    // BTD
-    case "Bangladesh":
-    // BBD
-    case "Barbados":
-    // BYN
-    case "Belarus":
-    // BZD
-    case "Belize":
-    // XOF
-    case "Benin":
-    // BMD
-    case "Bermuda":
-    // BTN
-    case "Bhutan":
-    // BOB
-    case "Bolivia":
-    // BAM
-    case "Bosnia & Herzegovina":
-    // BWP
-    case "Botswana":
-    // BND
-    case "Brunei":
-    // XOF
-    case "Burkina Faso":
-    // BIF
-    case "Burundi":
-    // KHR
-    case "Cambodia":
-    // XAF
-    case "Cameroon":
-    // CVE
-    case "Cape Verde":
-    // KYD
-    case "Cayman Islands":
-    // XAF
-    case "Chad":
-    // CLP
-    case "Chile":
-    // COP
-    case "Columbia":
-    // KMF
-    case "Comoros":
-    // CRC
-    case "Costa Rica":
-    // CDF
-    case "Democratic Republic of the Congo":
-    // DOP
-    case "Dominica":
-    // DJF
-    case "Djibouti":
-    // DOP
-    case "Dominican Republic":
-    // EGP
-    case "Egypt":
-    // SVC
-    case "El Salvador":
-    // ERN
-    case "Eritrea":
-    // ETB
-    case "Ethiopia":
-    // FKP
-    case "Falkland Islands":
-    // FJD
-    case "Fiji":
-    // XPF
-    case "French Polynesia":
-    // XAF
-    case "Gabon":
-    // GMD
-    case "Gambia":
-    // GEL
-    case "Georgia":
-    // XCD
-    case "Grenada":
-    // GTQ
-    case "Guatemala":
-    // XOF
-    case "Guinea-Bissau":
-    // GYD
-    case "Guyana":
-    // HNL
-    case "Honduras":
-    // ISK
-    case "Iceland":
-    // IDR
-    case "Indonesia":
-    // XOF
-    case "Ivory Coast":
-    // JMD
-    case "Jamaica":
-    // JOD
-    case "Jordan":
-    // KZT
-    case "Kazakhstan":
-    // KES
-    case "Kenya":
-    // KWD
-    case "Kuwait":
-    // KGS
-    case "Kyrgyzstan":
-    // LAK
-    case "Laos":
-    // LSL
-    case "Lesotho":
-    // MKD
-    case "Macedonia":
-    // MGA
-    case "Madagascar":
-    // MWK
-    case "Malawi":
-    // MVR
-    case "Maldives":
-    // XOF
-    case "Mali":
-    // MRU
-    case "Mauritania":
-    // MUR
-    case "Mauritius":
-    // MDL
-    case "Moldova":
-    // MNT
-    case "Mongolia":
-    // XCD
-    case "Montserrat":
-    // MAD
-    case "Morocco":
-    // MZN
-    case "Mozambique":
-    // NAD
-    case "Namibia":
-    // NPR
-    case "Nepal":
-    //
-    case "Netherlands Antilles":
-    // XPF
-    case "New Caledonia":
-    // XPF
-    case "Nicaragua":
-    // NGN
-    case "Niger":
-    // NGN
-    case "Nigeria":
-    // OMR
-    case "Oman":
-    // PAB
-    case "Panama":
-    // PGK
-    case "Papua New Guinea":
-    // PYG
-    case "Paraguay":
-    // PEN
-    case "Peru":
-    // QAR
-    case "Qatar":
-    // CDF
-    case "Republic of the Congo":
-    // RWF
-    case "Rwanda":
-    // SHP
-    case "Saint Helena":
-    // XCD
-    case "Saint Kitts & Nevis":
-    // XCD
-    case "Saint Lucia":
-    // XCD
-    case "Saint Vincent & Grenadines":
-    // STN
-    case "Sao Tome & Principe":
-    // SAR
-    case "Saudi Arabia":
-    // XOF
-    case "Senegal":
-    // RSD
-    case "Serbia":
-    // SCR
-    case "Seychelles":
-    // SLL
-    case "Sierra Leone":
-    // SBD
-    case "Solomon Islands":
-    // SOS
-    case "Somalia":
-    // ZAR
-    case "South Africa":
-    // LKR
-    case "Sri Lanka":
-    // SRD
-    case "Suriname":
-    // SZL
-    case "Swaziland":
-    // TJS
-    case "Tajikistan":
-    // TZS
-    case "Tanzania":
-    // XOF
-    case "Togo":
-    // TOP
-    case "Tonga":
-    // TTD
-    case "Trinidad & Tobago":
-    // TND
-    case "Tunisia":
-    // TMT
-    case "Turkmenistan":
-    // UGX
-    case "Uganda":
-    // UAH
-    case "Ukraine":
-    // ARS
-    case "United Arab Emirates":
-    // UYU
-    case "Uruguay":
-    // VUV
-    case "Vanuatu":
-    // VES
-    case "Venezuela":
-    // XPF
-    case "Wallis & Futuna Islands":
-    // YER
-    case "Yemen":
-    // ZWM
-    case "Zambia":
-    // ZWL
-    case "Zimbabwe":
-      alert(
-        "Unable to determine Paypal fixed fees for selected country. Calculaiton will be off."
-      );
-      item.ppFixedFees = 0.0;
+        case "CHF":
+          item.ppFixedFees = 0.39;
+          break;
+
+        case "MXN":
+          item.ppFixedFees = 9.0;
+          break;
+
+        case "BRL":
+          item.ppFixedFees = 2.49;
+          break;
+
+        case "NZD":
+          item.ppFixedFees = 0.59;
+          break;
+
+        case "SEK":
+          item.ppFixedFees = 3.99;
+          break;
+
+        case "DKK":
+          item.ppFixedFees = 2.89;
+          break;
+
+        default:
+          alert(
+            "Selected currency for " +
+              item.source +
+              " as source country is not supported. Please file a bug, this shouldn't happen."
+          );
+          item.ppFixedFees = 0.0;
+          break;
+      }
       break;
 
     default:
-      break;
+      alert(
+        "Country " +
+          item.source +
+          " is not supported. Please file a bug, this shouldn't happen."
+      );
   }
 }
 
@@ -718,50 +812,86 @@ function setPpFees(item) {
   if (allOtherPPCountry.includes(item.source)) country = "otherCountries";
 
   switch (country) {
-    case "Canada":
-      // See: https://www.paypal.com/ca/webapps/mpp/merchant-fees
-      item.ppFeeRate = 0.029;
-      item.ppFixedFees = 0.3;
+    case "Brazil":
+      // See: https://www.paypal.com/br/webapps/mpp/merchant-fees
+      item.ppFeeRate = 0.0479;
+      setPaypalFixedFees(item);
       break;
 
     case "United States":
       // See: https://www.paypal.com/us/webapps/mpp/merchant-fees
       item.ppFeeRate = 0.0349;
-      item.ppFixedFees = 0.3;
+      setPaypalFixedFees(item);
+      break;
+
+    // TODO: Double check.
+    case "Germany":
+      // See: https://www.paypal.com/de/webapps/mpp/merchant-fees
+      item.ppFeeRate = 0.0299;
+      setPaypalFixedFees(item);
+      break;
+
+    case "Canada":
+    // See: https://www.paypal.com/ca/webapps/mpp/merchant-fees
+    case "Poland":
+    // https://www.paypal.com/pl/webapps/mpp/merchant-fees
+    case "Portugal":
+    // https://www.paypal.com/pt/webapps/mpp/merchant-fees
+
+    // TODO: Need to double check.
+    case "Spain":
+    // https://www.paypal.com/es/webapps/mpp/merchant-fees
+
+    case "France":
+    case "French Guiana":
+    case "Guadeloupe":
+    case "Martinique":
+    case "Reunion":
+      // See: https://www.paypal.com/fr/webapps/mpp/merchant-fees
+      item.ppFeeRate = 0.029;
+      setPaypalFixedFees(item);
       break;
 
     case "Austria":
     //See https://www.paypal.com/at/webapps/mpp/merchant-fees
     case "Belgium":
     // See: https://www.paypal.com/be/webapps/mpp/merchant-fees
+    case "Denmark":
+    // See: https://www.paypal.com/dk/webapps/mpp/merchant-fees
+    case "Finland":
+    // See: https://www.paypal.com/fi/webapps/mpp/merchant-fees
+    case "Hungary":
+    // See: https://www.paypal.com/hu/webapps/mpp/merchant-fees
+    case "Ireland":
+    // See: https://www.paypal.com/ie/webapps/mpp/merchant-fees
+    case "Italy":
+    // See: https://www.paypal.com/it/webapps/mpp/merchant-fees
+    case "Luxembourg":
+    // See: https://www.paypal.com/lu/webapps/mpp/merchant-fees
+    case "Netherlands":
+    // https://www.paypal.com/nl/webapps/mpp/merchant-fees
+    case "Norway":
+    // https://www.paypal.com/no/webapps/mpp/merchant-fees
+    case "Sweden":
+    // https://www.paypal.com/se/webapps/mpp/merchant-fees
+
+    // Country belows all have the same PayPal fees
+    // See: https://www.paypal.com/bg/webapps/mpp/merchant-fees
     case "Bulgaria":
     case "Cyprus":
+    case "Czech Republic":
     case "Estonia":
     case "Greece":
     case "Latvia":
+    case "Liechtenstein":
     case "Lithuania":
     case "Malta":
     case "Romania":
     case "San Marino":
     case "Slovakia":
     case "Slovenia":
-      // See: https://www.paypal.com/bg/webapps/mpp/merchant-fees
       item.ppFeeRate = 0.034;
-      item.ppFixedFees = 0.35;
-      break;
-
-    case "Liechtenstein":
-      // See: https://www.paypal.com/li/webapps/mpp/merchant-fees
-      item.ppFeeRate = 0.034;
-      // Liechtenstein is using CHF.
-      item.ppFixedFees = 0.55;
-      break;
-
-    case "Czech Republic":
-      // See: https://www.paypal.com/cz/webapps/mpp/merchant-fees
-      item.ppFeeRate = 0.034;
-      // Czech Republic is using CZK.
-      item.ppFixedFees = 10.0;
+      setPaypalFixedFees(item);
       break;
 
     case "otherCountries":
@@ -911,10 +1041,13 @@ function setPpFees(item) {
           item.ppFeeRate = 0.044;
         }
       }
-      setOtherCountriesFixedFees(item);
+      setPaypalFixedFees(item);
       break;
 
     default:
+      alert(
+        "Selected country not supported. Please file a bug, this shouldn't happen."
+      );
       break;
   }
 }
@@ -945,9 +1078,71 @@ function setSupFees(item) {
       }
       break;
 
+    case "Brazil":
+      // See: https://www.paypal.com/br/webapps/mpp/merchant-fees
+      if (item.destination == "Brazil") {
+        item.suppPpFeeRate = 0.0;
+      } else {
+        item.suppPpFeeRate = 0.0161;
+      }
+      break;
+
+    case "Ireland":
+      // See: https://www.paypal.com/ie/webapps/mpp/merchant-fees
+      if (item.destination == "Ireland") {
+        item.suppPpFeeRate = 0.0;
+      } else if (
+        europeI.includes(item.destination) ||
+        northernEurope.includes(item.destination)
+      ) {
+        item.suppPpFeeRate = 0.05;
+      } else {
+        item.suppPpFeeRate = 0.02;
+      }
+      break;
+
     case "Austria":
     // See: https://www.paypal.com/at/webapps/mpp/merchant-fees
     case "Belgium":
+    // See: https://www.paypal.com/be/webapps/mpp/merchant-fees
+    case "Denmark":
+    // See: https://www.paypal.com/dk/webapps/mpp/merchant-fees
+    case "Finland":
+    // https://www.paypal.com/fi/webapps/mpp/merchant-fees
+
+    // TODO: Need to double check.
+    case "Germany":
+    // https://www.paypal.com/de/webapps/mpp/merchant-fees
+
+    case "Hungary":
+    // https://www.paypal.com/hu/webapps/mpp/merchant-fees
+    case "Italy":
+    // https://www.paypal.com/it/webapps/mpp/merchant-fees
+    case "Luxembourg":
+    // https://www.paypal.com/lu/webapps/mpp/merchant-fees
+    case "Netherlands":
+    // https://www.paypal.com/nl/webapps/mpp/merchant-fees
+    case "Norway":
+    // https://www.paypal.com/no/webapps/mpp/merchant-fees
+    case "Poland":
+    // https://www.paypal.com/pl/webapps/mpp/merchant-fees
+    case "Portugal":
+    // https://www.paypal.com/pt/webapps/mpp/merchant-fees
+    case "Sweden":
+    // https://www.paypal.com/se/webapps/mpp/merchant-fees
+
+    // TODO: Need to double check.
+    case "Spain":
+    // https://www.paypal.com/es/webapps/mpp/merchant-fees
+
+    case "France":
+    case "French Guiana":
+    case "Guadeloupe":
+    case "Martinique":
+    case "Reunion":
+    // See: https://www.paypal.com/fr/webapps/mpp/merchant-fees
+
+    // The following country all have the same PP fees.
     // See: https://www.paypal.com/bg/webapps/mpp/merchant-fees
     case "Bulgaria":
     case "Cyprus":
@@ -962,7 +1157,6 @@ function setSupFees(item) {
     case "San Marino":
     case "Slovakia":
     case "Slovenia":
-      // See: https://www.paypal.com/bg/webapps/mpp/merchant-fees
       if (eeaCountries.includes(item.destination)) {
         // All those coutries are also part of EEA, so domestic transaction will be catched here.
         item.suppPpFeeRate = 0.0;
@@ -979,10 +1173,12 @@ function setSupFees(item) {
       } else {
         item.suppPpFeeRate = 0.0;
       }
-
       break;
 
     default:
+      alert(
+        "Selected country not supported. Please file a bug, this shouldn't happen."
+      );
       item.suppPpFeeRate = 0.0;
       break;
   }
@@ -991,40 +1187,40 @@ function setSupFees(item) {
 function fillBreakdown(item) {
   var amount =
     item.itemPrice + item.shippingPrice - (item.discogsFee + item.paypalFee);
-  document.getElementById("amount").innerHTML = amount.toLocaleString("en-CA", {
+  document.getElementById("amount").innerHTML = amount.toLocaleString("en-US", {
     style: "currency",
-    currency: "CAD",
+    currency: item.currency,
   });
 
   document.getElementById("discogsCut").innerHTML =
-    item.discogsFee.toLocaleString("en-CA", {
+    item.discogsFee.toLocaleString("en-US", {
       style: "currency",
-      currency: "CAD",
+      currency: item.currency,
     });
 
   document.getElementById("discogsTotal").innerHTML =
-    item.discogsTotal.toLocaleString("en-CA", {
+    item.discogsTotal.toLocaleString("en-US", {
       style: "currency",
-      currency: "CAD",
+      currency: item.currency,
     });
 
   document.getElementById("itemPrice").innerHTML =
-    item.itemPrice.toLocaleString("en-CA", {
+    item.itemPrice.toLocaleString("en-US", {
       style: "currency",
-      currency: "CAD",
+      currency: item.currency,
     });
 
   document.getElementById("shippingPrice").innerHTML =
-    item.shippingPrice.toLocaleString("en-CA", {
+    item.shippingPrice.toLocaleString("en-US", {
       style: "currency",
-      currency: "CAD",
+      currency: item.currency,
     });
 
   document.getElementById("ppCut").innerHTML = item.paypalFee.toLocaleString(
-    "en-CA",
+    "en-US",
     {
       style: "currency",
-      currency: "CAD",
+      currency: item.currency,
     }
   );
 
@@ -1039,22 +1235,22 @@ function fillBreakdown(item) {
     item.itemPrice +
     item.shippingPrice +
     item.taxes
-  ).toLocaleString("en-CA", {
+  ).toLocaleString("en-US", {
     style: "currency",
-    currency: "CAD",
+    currency: item.currency,
   });
 
   document.getElementById("ppFixedFees").innerHTML =
-    item.ppFixedFees.toLocaleString("en-CA", {
+    item.ppFixedFees.toLocaleString("en-US", {
       style: "currency",
-      currency: "CAD",
+      currency: item.currency,
     });
 
   document.getElementById("yourCut").innerHTML = amount.toLocaleString(
-    "en-CA",
+    "en-US",
     {
       style: "currency",
-      currency: "CAD",
+      currency: item.currency,
     }
   );
 
@@ -1070,35 +1266,59 @@ function fillBreakdown(item) {
 
   document.getElementById("totalTransactionAmount").innerHTML = (
     item.itemPrice + item.shippingPrice
-  ).toLocaleString("en-CA", {
+  ).toLocaleString("en-US", {
     style: "currency",
-    currency: "CAD",
+    currency: item.currency,
   });
 
   document.getElementById("result").classList.remove("d-none");
 }
 
 function setCurrency() {
-  countryName = document.getElementById("ddlSource").value;
+  currency = document.getElementById("ddlCurrency").value;
 
-  if (["Bulgaria", "Romania"].includes(countryName)) {
-    /* Bulgaria uses BGN currency, but Paypal doesn't support it, so I assume
-     * they are using EUR.
-     */
-    currency = "EUR";
-  } else {
-    code = countryCodes.countryToCode(countryName);
-    currency = countryToCurrency[code];
-  }
-
-  const currenciesSpan = document.querySelectorAll(".currency");
-  currenciesSpan.forEach((span) => {
-    if (currency) {
-      span.innerHTML = " (" + currency + ")";
-    } else {
-      span.innerHTML = "";
-    }
+  document.getElementById("ddlCurrency").value = currency;
+  document.querySelectorAll(".currency").forEach((span) => {
+    span.innerHTML = " (" + currency + ")";
   });
+
+  document.querySelectorAll(".currencySymbol").forEach((span) => {
+    span.innerHTML = currencySymbol[currency];
+    span.classList.add("ms-3");
+  });
+}
+
+function setFromCountry() {
+  countryName = document.getElementById("ddlSource").value;
+  code = countryCodes.countryToCode(countryName);
+  currency = countryToCurrency[code];
+
+  if (currency) {
+    if (
+      document
+        .getElementById("ddlCurrency")
+        .querySelector('[value="' + currency + '"]')
+    ) {
+      document.getElementById("ddlCurrency").value = currency;
+      document.querySelectorAll(".currency").forEach((span) => {
+        span.innerHTML = " (" + currency + ")";
+      });
+
+      document.querySelectorAll(".currencySymbol").forEach((span) => {
+        span.innerHTML = currencySymbol[currency];
+        span.classList.add("ms-3");
+      });
+    } else {
+      document.querySelectorAll(".currency").forEach((span) => {
+        span.innerHTML = "";
+      });
+      document.querySelectorAll(".currencySymbol").forEach((span) => {
+        span.innerHTML = "";
+        span.classList.remove("ms-3");
+      });
+      document.getElementById("ddlCurrency").selectedIndex = 0;
+    }
+  }
 
   if (allOtherPPCountry.includes(document.getElementById("ddlSource").value)) {
     document.getElementById("allOtherPPCountryNote").classList.remove("d-none");
@@ -1116,6 +1336,7 @@ function calculateFees() {
     source: document.getElementById("ddlSource").value,
     destination: document.getElementById("ddlDestination").value,
     zipCode: document.getElementById("zipCode").value,
+    currency: document.getElementById("ddlCurrency").value,
     discogsTotal: 0.0,
     discogsFee: 0.0,
     ppTotal: 0.0,
