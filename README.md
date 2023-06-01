@@ -6,7 +6,8 @@ A simple tool to help see the real amount you will get when you sell an item to 
 
 ### Future improvment
 
-- Add other origin and destination countries
+- Add a field for Paypal currency and calculate exchange fees.
+- Add Paypal merchant fee rates for countries where it applies.
 
 ### Bug or feature request
 
