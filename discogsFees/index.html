@@ -40,189 +40,191 @@
     </style>
     <title>Discogs Fees Calculator</title>
   </head>
+  <nav class="container-fluid navbar navbar-expand-lg navbar-dark bg-dark">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbar"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse mx-2" id="navbar">
+      <div class="navbar-nav mx-3">
+        <a class="navbar-brand">Jeremy Pare</a>
+        <a class="nav-item nav-link" id="home" href="../index.html"
+          >My link tree</a
+        >
+      </div>
+    </div>
+  </nav>
   <body
     onload="loadCSV('lib/Woocommerce-US-ZipCodes-TaxRates/tax_rates.csv'); setCountryDdl();"
   >
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbar"
+    <div class="container-md">
+      <h1 class="mx-3 mt-3 text-center">Discogs Fees Calculator</h1>
+      <form
+        class="font-weight-bold mt-3 mx-3"
+        id="formCalculate"
+        needs-validation
+        onsubmit="event.preventDefault(); return calculateFees();"
       >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse mx-2" id="navbar">
-        <div class="navbar-nav mx-3">
-          <a class="navbar-brand">Jeremy Pare</a>
-          <a class="nav-item nav-link" id="home" href="../index.html"
-            >My link tree</a
-          >
-        </div>
-      </div>
-    </nav>
-    <h1 class="mx-3 mt-3 text-center">Discogs Fees Calculator</h1>
-    <form
-      class="font-weight-bold mt-3 mx-3"
-      id="formCalculate"
-      needs-validation
-      onsubmit="event.preventDefault(); return calculateFees();"
-    >
-      <div class="row mb-3">
-        <div class="col">
-          <label for="sourceCountry">You Country</label>
-          <select
-            onchange="setFromCountry()"
-            class="form-select form-select-md"
-            aria-label=".form-select-md example"
-            required
-            id="ddlSource"
-            onclick="setDdlColor(this)"
-          >
-            <option selected disabled value="" style="color: gray">
-              Your Country
-            </option>
-          </select>
-        </div>
-        <div class="col">
-          <label for="ddlCurrency">Currency Used</label>
-          <select
-            class="form-select form-select-md"
-            aria-label=".form-select-md example"
-            required
-            id="ddlCurrency"
-            onclick="setDdlColor(this)"
-            onchange="setCurrency()"
-          >
-            <option selected disabled value="" style="color: gray">
-              Currency
-            </option>
-            <option value="USD">US Dollar (USD)</option>
-            <option value="GBP">British Pound (GBP)</option>
-            <option value="EUR">Euro (EUR)</option>
-            <option value="CAD">Canadian Dollar (CAD)</option>
-            <option value="AUD">Australian Dollar (AUD)</option>
-            <option value="JPY">Japenese Yen (JPY)</option>
-            <option value="CHF">Swiss Franc (CHF)</option>
-            <option value="MXN">Mexican Peso (MXN)</option>
-            <option value="BRL">Brazilian Real (BRL)</option>
-            <option value="NZD">New Zealand Dollar (NZD)</option>
-            <option value="SEK">Swedish Krona (SEK)</option>
-            <option value="DKK">Danish Krone (DKK)</option>
-          </select>
-        </div>
-        <div
-          class="d-none font-weight-bold text-danger"
-          id="allOtherPPCountryNote"
-        >
-          * Calculation is made assuming you don't have merchant fee rates.
-        </div>
-      </div>
-      <div class="row mb-3">
-        <div class="col">
-          <label class="font-weight-bold" for="inputItemPrice"
-            >Item Price <span class="currency"></span
-          ></label>
-          <div class="input-group">
-            <input
+        <div class="row mb-3">
+          <div class="col">
+            <label for="sourceCountry">You Country</label>
+            <select
+              onchange="setFromCountry()"
+              class="form-select form-select-md"
+              aria-label=".form-select-md example"
               required
-              type="number"
-              step="0.01"
-              min="0"
-              class="form-control"
-              id="inputItemPrice"
-              aria-describedby=""
-              placeholder="Enter item price"
-            />
-            <span class="mt-2 currencySymbol"></span>
+              id="ddlSource"
+              onclick="setDdlColor(this)"
+            >
+              <option selected disabled value="" style="color: gray">
+                Your Country
+              </option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="ddlCurrency">Currency Used</label>
+            <select
+              class="form-select form-select-md"
+              aria-label=".form-select-md example"
+              required
+              id="ddlCurrency"
+              onclick="setDdlColor(this)"
+              onchange="setCurrency()"
+            >
+              <option selected disabled value="" style="color: gray">
+                Currency
+              </option>
+              <option value="USD">US Dollar (USD)</option>
+              <option value="GBP">British Pound (GBP)</option>
+              <option value="EUR">Euro (EUR)</option>
+              <option value="CAD">Canadian Dollar (CAD)</option>
+              <option value="AUD">Australian Dollar (AUD)</option>
+              <option value="JPY">Japenese Yen (JPY)</option>
+              <option value="CHF">Swiss Franc (CHF)</option>
+              <option value="MXN">Mexican Peso (MXN)</option>
+              <option value="BRL">Brazilian Real (BRL)</option>
+              <option value="NZD">New Zealand Dollar (NZD)</option>
+              <option value="SEK">Swedish Krona (SEK)</option>
+              <option value="DKK">Danish Krone (DKK)</option>
+            </select>
+          </div>
+          <div
+            class="d-none font-weight-bold text-danger"
+            id="allOtherPPCountryNote"
+          >
+            * Calculation is made assuming you don't have merchant fee rates.
           </div>
         </div>
-        <div class="col">
-          <label for="inputShippingPrice"
-            >Shipping Price<span class="currency"></span
-          ></label>
-          <div class="input-group">
-            <input
-              required
-              type="number"
-              step="0.01"
-              min="0"
-              class="form-control"
-              id="inputShippingPrice"
-              aria-describedby=""
-              placeholder="Enter shipping price"
-            />
-            <span class="mt-2 currencySymbol"></span>
+        <div class="row mb-3">
+          <div class="col">
+            <label class="font-weight-bold" for="inputItemPrice"
+              >Item Price <span class="currency"></span
+            ></label>
+            <div class="input-group">
+              <input
+                required
+                type="number"
+                step="0.01"
+                min="0"
+                class="form-control"
+                id="inputItemPrice"
+                aria-describedby=""
+                placeholder="Enter item price"
+              />
+              <span class="mt-2 currencySymbol"></span>
+            </div>
+          </div>
+          <div class="col">
+            <label for="inputShippingPrice"
+              >Shipping Price<span class="currency"></span
+            ></label>
+            <div class="input-group">
+              <input
+                required
+                type="number"
+                step="0.01"
+                min="0"
+                class="form-control"
+                id="inputShippingPrice"
+                aria-describedby=""
+                placeholder="Enter shipping price"
+              />
+              <span class="mt-2 currencySymbol"></span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="form-group mb-3">
-        <label for="ddlDestination">Destination Country</label>
-        <select
-          class="form-select form-select-md"
-          aria-label=".form-select-md example"
-          required
-          id="ddlDestination"
-          onchange="showState()"
-          onclick="setDdlColor(this)"
-        >
-          <option selected disabled value="" style="color: gray">
-            Destination Country
-          </option>
-        </select>
+        <div class="form-group mb-3">
+          <label for="ddlDestination">Destination Country</label>
+          <select
+            class="form-select form-select-md"
+            aria-label=".form-select-md example"
+            required
+            id="ddlDestination"
+            onchange="showState()"
+            onclick="setDdlColor(this)"
+          >
+            <option selected disabled value="" style="color: gray">
+              Destination Country
+            </option>
+          </select>
+        </div>
+        <div id="zipCodeFormGroup" class="mb-3 d-none">
+          <label for="zipCode">Destination Zip Code</label>
+          <input
+            oninput="this.setCustomValidity('')"
+            type="number"
+            maxlength="5"
+            class="form-control"
+            id="zipCode"
+            aria-describedby=""
+            placeholder="Enter the destination zip code"
+          />
+        </div>
+        <button class="btn btn-primary">Calculate</button>
+      </form>
+      <div id="result" class="d-none card mt-3 mx-3">
+        <div class="card-body">
+          <p class="font-weight-bold lead">You will get:</p>
+          <div id="amount"></div>
+          <p></p>
+          <br />
+          <p class="font-weight-bold lead">Here is the breakdown:</p>
+          <p>Discogs will take: <span id="discogsCut"></span>.</p>
+          <p>
+            This is 9% of <span id="discogsTotal"></span> which is item price of
+            <span id="itemPrice"></span> + shipping price of
+            <span id="shippingPrice"></span>.
+          </p>
+          <br />
+          <p>Paypal will take: <span id="ppCut"></span></p>
+          <p>
+            This is <span id="ppPerc"></span>% (<span id="ppBasePerc"></span>%
+            of base fee rate + <span id="ppSupPerc"></span>% of supplemental fee
+            rate) of total transaction amount of
+            <span id="totalTransaction"></span>$ +
+            <span id="ppFixedFees"></span> of fixed fees.
+          </p>
+          <br />
+          <p>You will get will get: <span id="yourCut"></span>.</p>
+          <p>
+            Thich is effectively <span id="yourCutPerc"></span>% (<span
+              id="feesPerc"
+            ></span
+            >% of fees) of the total transaction amount of
+            <span id="totalTransactionAmount"></span>.
+          </p>
+        </div>
       </div>
-      <div id="zipCodeFormGroup" class="mb-3 d-none">
-        <label for="zipCode">Destination Zip Code</label>
-        <input
-          oninput="this.setCustomValidity('')"
-          type="number"
-          maxlength="5"
-          class="form-control"
-          id="zipCode"
-          aria-describedby=""
-          placeholder="Enter the destination zip code"
-        />
-      </div>
-      <button class="btn btn-primary">Calculate</button>
-    </form>
-    <div id="result" class="d-none card mt-3 mx-3">
-      <div class="card-body">
-        <p class="font-weight-bold lead">You will get:</p>
-        <div id="amount"></div>
-        <p></p>
-        <br />
-        <p class="font-weight-bold lead">Here is the breakdown:</p>
-        <p>Discogs will take: <span id="discogsCut"></span>.</p>
-        <p>
-          This is 9% of <span id="discogsTotal"></span> which is item price of
-          <span id="itemPrice"></span> + shipping price of
-          <span id="shippingPrice"></span>.
-        </p>
-        <br />
-        <p>Paypal will take: <span id="ppCut"></span></p>
-        <p>
-          This is <span id="ppPerc"></span>% (<span id="ppBasePerc"></span>% of
-          base fee rate + <span id="ppSupPerc"></span>% of supplemental fee
-          rate) of total transaction amount of
-          <span id="totalTransaction"></span>$ +
-          <span id="ppFixedFees"></span> of fixed fees.
-        </p>
-        <br />
-        <p>You will get will get: <span id="yourCut"></span>.</p>
-        <p>
-          Thich is effectively <span id="yourCutPerc"></span>% (<span
-            id="feesPerc"
-          ></span
-          >% of fees) of the total transaction amount of
-          <span id="totalTransactionAmount"></span>.
-        </p>
-      </div>
-    </div>
+    
   </body>
 
-  <footer class="mt-4 mx-3">
-    <div class="col-xs-12 col-sm-12">
+  <footer class="mt-4">
+    <div class="container-md">
       <div class="alert alert-info" role="alert">
         Calculation is made assuming you are using the same currency in Discogs
         and Paypal. Conversion fees are not calculated.
