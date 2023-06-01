@@ -32,7 +32,8 @@
       crossorigin="anonymous"
     ></script>
     <script src="./lib/jquery-csv/src/jquery.csv.min.js"></script>
-    <script src="./feeCalculator.js"></script>
+    <script type="text/javascript" src="./countryConst.json"></script>
+    <script type="text/javascript" src="./feeCalculator.js"></script>
     <style>
       select:invalid {
         color: grey;
@@ -71,7 +72,7 @@
       >
         <div class="row mb-3">
           <div class="col">
-            <label for="sourceCountry">You Country</label>
+            <label for="ddlSource">You Country</label>
             <select
               onchange="setFromCountry()"
               class="form-select form-select-md"
@@ -189,8 +190,10 @@
       </form>
       <div id="result" class="d-none card mt-3 mx-3">
         <div class="card-body">
-          <p class="font-weight-bold lead">You will get:</p>
+          <p class="font-weight-bold lead">You will get in your Paypal account:</p>
           <div id="amount"></div>
+          <p></p>
+          <p class="font-weight-bold">After paying shipping, this will leave you with: <span id="amountAferShipping"></span></p>
           <p></p>
           <br />
           <p class="font-weight-bold lead">Here is the breakdown:</p>
