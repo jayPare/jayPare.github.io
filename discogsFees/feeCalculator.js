@@ -1,72 +1,52 @@
-//TODO: Double check if those country are really not supported, can't find them on Paypal
-// "Aland Islands"
-// "AF", "Afghanistan"
-// "AX", "Aland Islands"
-// "AS", "American Samoa"
-// "AQ", "Antarctica"
-// "IO", "British Indian Ocean Territory"
-// "CF", "Central African Republic"
-// "CX", "Christmas Island"
-// "CC", "Cocos Islands"
-// "CU", "Cuba"
-// "CW", "Curacao"
-// "TL", "East Timor"
-// "GQ", "Equatorial Guinea"
-// "GH", "Ghana"
-// "GI", "Gibraltar"
-// "GU", "Guam"
-// "GG", "Guernsey"
-// "GN", "Guinea"
-// "HT", "Haiti"
-// "ID", "India"
-// "IR", "Iran"
-// "IQ", "Iraq"
-// "IM", "Isle Of Man"
-// "JE", "Jersey"
-// "XK", "Kosovo"
-// "LB", "Lebanon"
-// "LR", "Liberia"
-// "LY", "Libya"
-// "MO", "Macau"
-// "YT", "Mayotte"
-// "MM", "Myanmar"
-// "MP", "Northern Mariana Islands"
-// "KP", "North Korea"
-// "PK", "Pakistan"
-// "PS", "Palestine"
-// "PR", "Puerto Rico"
-// "BL", "Saint Barthelemy"
-// "MF", "Saint Martin"
-// "SX", "Sint Maarten"
-// "SS", "South Sudan"
-// "SD", "Sudan"
-// "SY", "Syria"
-// "TK", "Tokelau"
-// "TR", "Turkey"
-// "VI", "U.S. Virgin Islands"
-// "UZ", "Uzbekistan"
-// "VA", "Vatican"
-// "VE", "Vietnam"
-// "EH", "Western Sahara"
-// "VA", "Vatican"
-
-//TODO: Fill ddl with JS instead of 3495493429 options in HTML.
-
-//TODO: Add support for AU GST and NZ GST.
-
-//TODO: Add following countries support:
-//code: "AU", name: "Australia"
-//code: "CN", name: "China"
-//code: "HK", name: "Hong Kong"
-//code: "IL", name: "Israel"
-//code: "JP", name: "Japan"
-//code: "MX", name: "Mexico"
-//code: "RU", name: "Russia"
-//code: "KR", name: "South Korea"
-//code: "CH", name: "Switzerland"
-//code: "TW", name: "Taiwan"
-//code: "TH", name: "Thailand"
-//code: "GB", name: "United Kingdom"
+const unsupportedCountries = [
+  "Afghanistan",
+  "Aland Islands",
+  "American Samoa",
+  "Antarctica",
+  "British Indian Ocean Territory",
+  "Central African Republic",
+  "Channel Islands",
+  "Christmas Island",
+  "Cocos Islands",
+  "Cuba",
+  "Curacao",
+  "East Timor",
+  "Equatorial Guinea",
+  "Ghana",
+  "Gibraltar",
+  "Guam",
+  "Guinea",
+  "Haiti",
+  "India",
+  "Iran",
+  "Iraq",
+  "Kosovo",
+  "Lebanon",
+  "Liberia",
+  "Libya",
+  "Macau",
+  "Mayotte,",
+  "Myanmar",
+  "Northern Mariana Islands",
+  "North Korea",
+  "Pakistan",
+  "Palestine",
+  "Puerto Rico",
+  "Saint Barthelemy",
+  "Saint Martin",
+  "Sint Maarten",
+  "South Sudan",
+  "Sudan",
+  "Syria",
+  "Tokelau",
+  "Turkey",
+  "U.S. Virgin Islands",
+  "Uzbekistan",
+  "Vatican",
+  "Vietnam",
+  "Western Sahara",
+  "Vatican",
+];
 
 const currencySymbol = {
   USD: "$",
@@ -108,7 +88,6 @@ const eeaCountries = [
   "Luxembourg",
   "Malta",
   "Martinique",
-  // TODO: Need to add support.
   "Mayotte",
   "Monaco",
   "Netherlands",
@@ -122,24 +101,14 @@ const eeaCountries = [
   "Slovenia",
   "Spain",
   "Sweden",
-  // TODO: Need to add support.
   "Vatican",
 ];
 
-ukCountries = [
-  //TODO: Add Support.
-  "Guernsey",
-  //TODO: Add Support.
-  "Isle of Man",
-  //TODO:"Add Support"
-  "Jersey",
-  "United Kingdom",
-];
+const ukCountries = ["Guernsey", "Isle of Man", "Jersey", "United Kingdom"];
 
 const europeI = [
   "Austria",
   "Belgium",
-  // TODO: Add support
   "Channel Islands",
   "Cyprus",
   "Estonia",
@@ -169,8 +138,31 @@ const europeI = [
   "Vatican",
 ];
 
+const europeII = [
+  "Albania",
+  "Andorra",
+  "Belarus",
+  "Bosnia & Herzegovina",
+  "Bulgaria",
+  "Croatia",
+  "Czech Republic",
+  "Georgia",
+  "Hungary",
+  "Kosovo",
+  "Latvia",
+  "Liechtenstein",
+  "Lithuania",
+  "Macedonia",
+  "Moldova",
+  "Poland",
+  "Romania",
+  "Russian Federation",
+  "Serbia",
+  "Switzerland",
+  "Ukraine",
+];
+
 const northernEurope = [
-  // TODO: Add support
   "Aland Islands",
   "Denmark",
   "Faroe Islands",
@@ -333,7 +325,7 @@ const allOtherPPCountry = [
   "Zimbabwe",
 ];
 
-let csv = "";
+var csv = "";
 var xmlhttp;
 
 function showState() {
@@ -347,38 +339,57 @@ function showState() {
 }
 
 function usTaxes(item) {
-  var taxes = $.csv.toObjects(csv);
+  if (csv) {
+    let taxes = $.csv.toObjects(csv);
 
-  var result = taxes.find(
-    (taxes) => taxes["Postcode / ZIP"] === item.zipCode.toString()
-  );
+    let result = taxes.find(
+      (tax) => tax["Postcode / ZIP"] === item.zipCode.toString()
+    );
 
-  item.taxRate = result["Rate %"] / 100;
+    item.taxRate = result["Rate %"] / 100;
+  } else {
+    alert(
+      "Can't read CSV file for US taxes information. Please file a bug with the link at the end of this page."
+    );
+  }
 }
 
 function validate() {
-  var taxes = $.csv.toObjects(csv);
   var form = document.getElementById("formCalculate");
 
-  if (document.getElementById("ddlDestination").value == "United States") {
-    // Is zip code valid?
-    zipCode = document.getElementById("zipCode").value;
+  if (csv) {
+    let taxes = $.csv.toObjects(csv);
 
-    var result = taxes.find(
-      (taxes) => taxes["Postcode / ZIP"] === zipCode.toString()
-    );
+    if (document.getElementById("ddlDestination").value == "United States") {
+      // Is zip code valid?
+      zipCode = document.getElementById("zipCode").value;
 
-    if (!result) {
-      document.getElementById("zipCode").setCustomValidity("Invalid Zip Code");
-      document.getElementById("zipCode").reportValidity();
+      let result = taxes.find(
+        (tax) => tax["Postcode / ZIP"] === zipCode.toString()
+      );
+
+      if (!result) {
+        document
+          .getElementById("zipCode")
+          .setCustomValidity("Invalid Zip Code");
+        document.getElementById("zipCode").reportValidity();
+      }
     }
   }
 
   return form.checkValidity();
 }
 
-function calculateTax(item) {
+function setTaxes(item) {
   switch (item.destination) {
+    case "Australia":
+      item.taxRate = 0.1;
+      break;
+
+    case "New Zealand":
+      item.taxRate = 0.15;
+      break;
+
     case "Austria":
     case "Bulgaria":
     case "Estonia":
@@ -446,7 +457,7 @@ function calculateTax(item) {
       break;
   }
 
-  return (item.itemPrice + item.shippingPrice) * item.taxRate;
+  item.tax = (item.itemPrice + item.shippingPrice) * item.taxRate;
 }
 
 function setDdlColor(element) {
@@ -469,30 +480,44 @@ function loadCSV(url) {
 }
 
 function setCountryDdl() {
+  var countryList = countryCodes.allCountries();
+
+  countryList = countryList.filter(
+    (country) => !unsupportedCountries.includes(country)
+  );
+
+  // Move US at top of the list.
+  var usIndex = countryList.indexOf("United States");
+  countryList.unshift(countryList.splice(usIndex, 1)[0]);
+
   // Move the current country from IP on top of the list.
   fetch("https://api.ipregistry.co/?key=y63j7gejdjdze6uk")
     .then(function (response) {
       return response.json();
     })
     .then(function (payload) {
-      // In Your Country(ddlDestination) drop down list.
-      var select = document.querySelector("#ddlDestination");
-      var optionLabels = Array.from(select.options).map((opt) => opt.value);
-      if (optionLabels.includes(payload.location.country.name)) {
-        var option =
-          select.options[optionLabels.indexOf(payload.location.country.name)];
-        select.removeChild(option);
-        select.insertBefore(option, select.childNodes[2]);
+      if (countryList.includes(payload.location.country.name)) {
+        let currentCountryIndex = countryList.indexOf(
+          payload.location.country.name
+        );
+        countryList.unshift(countryList.splice(currentCountryIndex, 1)[0]);
       }
-      // In Destination Country(ddlSource) drop down list.
-      select = document.querySelector("#ddlSource");
-      optionLabels = Array.from(select.options).map((opt) => opt.value);
-      if (optionLabels.includes(payload.location.country.name)) {
-        option =
-          select.options[optionLabels.indexOf(payload.location.country.name)];
-        select.removeChild(option);
-        select.insertBefore(option, select.childNodes[2]);
-      }
+
+      //TODO: Where should I put the code below so it's executed even if the IP request fails?
+      let ddlDestination = document.getElementById("ddlDestination");
+      let ddlSource = document.getElementById("ddlSource");
+      countryList.map((country) => {
+        let opt = document.createElement("option");
+        let text =
+          allOtherPPCountry.includes(country) ||
+          ["Mexico", "Russia"].includes(country)
+            ? country + "*"
+            : country;
+        opt.value = country;
+        opt.innerHTML = text;
+        ddlSource.append(opt);
+        ddlDestination.append(opt.cloneNode(true));
+      });
     });
 }
 
@@ -503,7 +528,9 @@ function state_Change() {
     if (xmlhttp.status == 200) {
       csv = xmlhttp.responseText;
     } else {
-      alert("Problem retrieving CSV file");
+      alert(
+        "Problem retrieving CSV file. Please file a bug using the link at the end of this page."
+      );
     }
   }
 }
@@ -514,28 +541,50 @@ function setPaypalFixedFees(item) {
   if (allOtherPPCountry.includes(item.source)) country = "otherCountries";
 
   switch (country) {
-    case "Canada":
-    // See: https://www.paypal.com/ca/webapps/mpp/merchant-fees
+    case "Austria":
+    // See: https://www.paypal.com/au/webapps/mpp/merchant-fees
     case "Austria":
     // See: https://www.paypal.com/at/webapps/mpp/merchant-fees
     case "Belgium":
     // See: https://www.paypal.com/be/webapps/mpp/merchant-fees
     case "Brazil":
     // See: https://www.paypal.com/br/webapps/mpp/merchant-fees
+    case "Canada":
+    // See: https://www.paypal.com/ca/webapps/mpp/merchant-fees
+    case "China":
+    // See: https://www.paypal.com/cn/webapps/mpp/merchant-fees
     case "Denmark":
     // See: https://www.paypal.com/dk/webapps/mpp/merchant-fees
     case "Finland":
     // See: https://www.paypal.com/fi/webapps/mpp/merchant-fees
+    case "Hong Kong":
+    // See: https://www.paypal.com/hk/webapps/mpp/merchant-fees
+    case "Israel":
+    // See: https://www.paypal.com/il/webapps/mpp/merchant-fees
+    case "Japan":
+    // See: https://www.paypal.com/jp/webapps/mpp/merchant-fees
     case "Luxembourg":
     // See: https://www.paypal.com/lu/webapps/mpp/merchant-fees
+    case "Mexico":
+    // See: https://www.paypal.com/mx/webapps/mpp/merchant-fees
     case "Netherlands":
     // See: https://www.paypal.com/nl/webapps/mpp/merchant-fees
     case "Norway":
     // See: https://www.paypal.com/no/webapps/mpp/merchant-fees
     case "Poland":
     // See: https://www.paypal.com/pl/webapps/mpp/merchant-fees
+    case "Russia":
+    // See: https://www.paypal.com/ru/webapps/mpp/merchant-fees
+    case "South Korea":
+    // See: https://www.paypal.com/kr/webapps/mpp/merchant-fees
     case "Sweden":
     // See: https://www.paypal.com/se/webapps/mpp/merchant-fees
+    case "Switzerland":
+    // See: https://www.paypal.com/ch/webapps/mpp/merchant-fees
+    case "Taiwan":
+    // See: https://www.paypal.com/tw/webapps/mpp/merchant-fees
+    case "Tailand":
+    // See: https://www.paypal.com/th/webapps/mpp/merchant-fees
     case "otherCountries":
       // See: https://www.paypal.com/ki/webapps/mpp/merchant-fees
       switch (item.currency) {
@@ -607,9 +656,13 @@ function setPaypalFixedFees(item) {
     //  https://www.paypal.com/it/webapps/mpp/merchant-fees#domestic
     case "Portugal":
     // https://www.paypal.com/pt/webapps/mpp/merchant-fees
-
-    // TODO: Need to double check.
     case "Spain":
+    // https://www.paypal.com/es/webapps/mpp/merchant-fees
+
+    case "Isle Of Man":
+    case "Guernsey ":
+    case "Jersey ":
+    case "United Kingdom":
     // https://www.paypal.com/es/webapps/mpp/merchant-fees
 
     // All countries below have the same Paypal fees.
@@ -737,7 +790,6 @@ function setPaypalFixedFees(item) {
       }
       break;
 
-    // TODO: Need to double check.
     case "Germany":
       // See: https://www.paypal.com/de/webapps/mpp/merchant-fees
       switch (item.currency) {
@@ -806,28 +858,73 @@ function setPaypalFixedFees(item) {
   }
 }
 
-function setPpFees(item) {
+function setPaypalBaseFee(item) {
   country = item.source;
 
   if (allOtherPPCountry.includes(item.source)) country = "otherCountries";
 
   switch (country) {
+    case "Australia":
+      // See: https://www.paypal.com/au/webapps/mpp/merchant-fees
+      item.ppBaseFeesRate = 0.026;
+      setPaypalFixedFees(item);
+      break;
+
     case "Brazil":
       // See: https://www.paypal.com/br/webapps/mpp/merchant-fees
-      item.ppFeeRate = 0.0479;
+      item.ppBaseFeesRate = 0.0479;
+      setPaypalFixedFees(item);
+      break;
+
+    case "China":
+    // See: https://www.paypal.com/cn/webapps/mpp/merchant-fees
+    case "South Korea":
+    // See: https://www.paypal.com/kr/webapps/mpp/merchant-fees
+    case "Taiwan":
+      // See: https://www.paypal.com/tw/webapps/mpp/merchant-fees
+      item.ppBaseFeesRate = 0.0;
+      setPaypalFixedFees(item);
+      break;
+
+    case "Germany":
+      // See: https://www.paypal.com/de/webapps/mpp/merchant-fees
+      item.ppBaseFeesRate = 0.0299;
+      setPaypalFixedFees(item);
+      break;
+
+    case "Hong Kong":
+    // See: https://www.paypal.com/hk/webapps/mpp/merchant-fees
+    case "Russia":
+      // See: https://www.paypal.com/ru/webapps/mpp/merchant-fees
+      item.ppBaseFeesRate = 0.039;
+      setPaypalFixedFees(item);
+      break;
+
+    case "Japan":
+      // See: https://www.paypal.com/jp/webapps/mpp/merchant-fees
+      item.ppBaseFeesRate = 0.036;
+      setPaypalFixedFees(item);
+      break;
+
+    case "Mexico":
+      // See: https://www.paypal.com/mx/webapps/mpp/merchant-fees
+      item.ppBaseFeesRate = 0.0395;
+      setPaypalFixedFees(item);
+      break;
+
+    case "Thailand":
+      // See: https://www.paypal.com/th/webapps/mpp/merchant-fees
+      if (item.destination == item.source) {
+        item.ppBaseFeesRate = 0.039;
+      } else {
+        item.ppBaseFeesRate = 0.044;
+      }
       setPaypalFixedFees(item);
       break;
 
     case "United States":
       // See: https://www.paypal.com/us/webapps/mpp/merchant-fees
-      item.ppFeeRate = 0.0349;
-      setPaypalFixedFees(item);
-      break;
-
-    // TODO: Double check.
-    case "Germany":
-      // See: https://www.paypal.com/de/webapps/mpp/merchant-fees
-      item.ppFeeRate = 0.0299;
+      item.ppBaseFeesRate = 0.0349;
       setPaypalFixedFees(item);
       break;
 
@@ -838,8 +935,13 @@ function setPpFees(item) {
     case "Portugal":
     // https://www.paypal.com/pt/webapps/mpp/merchant-fees
 
-    // TODO: Need to double check.
     case "Spain":
+    // https://www.paypal.com/es/webapps/mpp/merchant-fees
+
+    case "Isle Of Man":
+    case "Guernsey ":
+    case "Jersey ":
+    case "United Kingdom":
     // https://www.paypal.com/es/webapps/mpp/merchant-fees
 
     case "France":
@@ -848,7 +950,7 @@ function setPpFees(item) {
     case "Martinique":
     case "Reunion":
       // See: https://www.paypal.com/fr/webapps/mpp/merchant-fees
-      item.ppFeeRate = 0.029;
+      item.ppBaseFeesRate = 0.029;
       setPaypalFixedFees(item);
       break;
 
@@ -864,6 +966,8 @@ function setPpFees(item) {
     // See: https://www.paypal.com/hu/webapps/mpp/merchant-fees
     case "Ireland":
     // See: https://www.paypal.com/ie/webapps/mpp/merchant-fees
+    case "Israel":
+    // See: https://www.paypal.com/il/webapps/mpp/merchant-fees
     case "Italy":
     // See: https://www.paypal.com/it/webapps/mpp/merchant-fees
     case "Luxembourg":
@@ -874,6 +978,8 @@ function setPpFees(item) {
     // https://www.paypal.com/no/webapps/mpp/merchant-fees
     case "Sweden":
     // https://www.paypal.com/se/webapps/mpp/merchant-fees
+    case "Switzerland":
+    // See: https://www.paypal.com/ch/webapps/mpp/merchant-fees
 
     // Country belows all have the same PayPal fees
     // See: https://www.paypal.com/bg/webapps/mpp/merchant-fees
@@ -890,7 +996,7 @@ function setPpFees(item) {
     case "San Marino":
     case "Slovakia":
     case "Slovenia":
-      item.ppFeeRate = 0.034;
+      item.ppBaseFeesRate = 0.034;
       setPaypalFixedFees(item);
       break;
 
@@ -928,13 +1034,13 @@ function setPpFees(item) {
       ) {
         // AG, BB, BM, BS, BZ, CL, CR, DM, DO, EC, GD, GT, HN, JM,
         // KN, KY, LC, NI, PA, PE, SV, TC, TT, UY, & VE
-        item.ppFeeRate = 0.054;
+        item.ppBaseFeesRate = 0.054;
       } else if (["Malaysia", "Singapore"].includes(item.destination)) {
         // MY & SG
-        item.ppFeeRate = 0.039;
+        item.ppBaseFeesRate = 0.039;
       } else if (item.destination == "Morocco") {
         //MA
-        item.ppFeeRate = 0.044;
+        item.ppBaseFeesRate = 0.044;
       } else if (
         [
           "Bahrain",
@@ -949,10 +1055,10 @@ function setPpFees(item) {
         ].includes(item.destination)
       ) {
         //BH, DZ, FJ, JO, NC, OM, PF, PW, & SA
-        item.ppFeeRate = 0.049;
+        item.ppBaseFeesRate = 0.049;
       } else if (allOtherPPCountry.includes(item.destination)) {
         //All other markets
-        item.ppFeeRate = 0.034;
+        item.ppBaseFeesRate = 0.034;
       } else {
         //Receiving international transactions
         if (
@@ -969,10 +1075,10 @@ function setPpFees(item) {
           //AD, AL, BA, FO, GE, MD, & RS
           if ([eeaCountries + ukCountries].includes(item.destination)) {
             //EEA & UK
-            item.ppFeeRate = 0.0469;
+            item.ppBaseFeesRate = 0.0469;
           } else {
             //All other markets
-            item.ppFeeRate = 0.0539;
+            item.ppBaseFeesRate = 0.0539;
           }
         } else if (
           [
@@ -1008,7 +1114,7 @@ function setPpFees(item) {
           // AG, AR, BB, BM, BS, BZ, CL, CO, CR, DM,
           // DO, EC, GD, GT, HN, JM, KN, KY, LC, NI,
           // PA, PE, SV, TC, TT, UY, & VE
-          item.ppFeeRate = 0.054;
+          item.ppBaseFeesRate = 0.054;
         } else if (
           [
             "Bahrain",
@@ -1023,22 +1129,22 @@ function setPpFees(item) {
           ].includes(item.source)
         ) {
           //BH, DZ, FJ, JO, NC, OM, PF, PW, & SA
-          item.ppFeeRate = 0.049;
+          item.ppBaseFeesRate = 0.049;
         } else if (["Croatia", "Iceland", "Monaco"].includes(item.source)) {
           //HR, IS, & MC
           if (eeaCountries.includes(item.destination)) {
             //EEA
-            item.ppFeeRate = 0.034;
+            item.ppBaseFeesRate = 0.034;
           } else if (ukCountries.includes(item.destination)) {
             //UK
-            item.ppFeeRate = 0.0469;
+            item.ppBaseFeesRate = 0.0469;
           } else {
             //All other markets
-            item.ppFeeRate = 0.0539;
+            item.ppBaseFeesRate = 0.0539;
           }
         } else {
           //All other markets
-          item.ppFeeRate = 0.044;
+          item.ppBaseFeesRate = 0.044;
         }
       }
       setPaypalFixedFees(item);
@@ -1052,52 +1158,154 @@ function setPpFees(item) {
   }
 }
 
-function setSupFees(item) {
+function setPaypalSupplementFee(item) {
   country = item.source;
 
   if (allOtherPPCountry.includes(item.source)) country = "otherCountries";
 
   switch (country) {
+    case "Australia":
+      // See: https://www.paypal.com/au/webapps/mpp/merchant-fees
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
+      } else {
+        item.ppSuppFeesRate = 0.01;
+      }
+      break;
+
     case "Canada":
       // See: https://www.paypal.com/ca/webapps/mpp/merchant-fees
-      if (item.destination == "Canada") {
-        item.suppPpFeeRate = 0.0;
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
       } else if (item.destination == "United-States") {
-        item.suppPpFeeRate = 0.008;
+        item.ppSuppFeesRate = 0.008;
       } else {
-        item.suppPpFeeRate = 0.01;
+        item.ppSuppFeesRate = 0.01;
+      }
+      break;
+
+    case "China":
+    // See: https://www.paypal.com/cn/webapps/mpp/merchant-fees
+    case "South Korea":
+    // See: https://www.paypal.com/kr/webapps/mpp/merchant-fees
+    case "Taiwan":
+      // See: https://www.paypal.com/tw/webapps/mpp/merchant-fees
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
+      } else {
+        item.ppSuppFeesRate = 0.044;
       }
       break;
 
     case "United States":
       // See: https://www.paypal.com/us/webapps/mpp/merchant-fees
-      if (item.destination == "United-States") {
-        item.suppPpFeeRate = 0.0;
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
       } else {
-        item.suppPpFeeRate = 0.015;
+        item.ppSuppFeesRate = 0.015;
       }
       break;
 
     case "Brazil":
       // See: https://www.paypal.com/br/webapps/mpp/merchant-fees
-      if (item.destination == "Brazil") {
-        item.suppPpFeeRate = 0.0;
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
       } else {
-        item.suppPpFeeRate = 0.0161;
+        item.ppSuppFeesRate = 0.0161;
+      }
+      break;
+
+    case "Hong Kong":
+    // See: https://www.paypal.com/hk/webapps/mpp/merchant-fees
+    case "Japan":
+    // See: https://www.paypal.com/jp/webapps/mpp/merchant-fees
+    case "Mexico":
+      // See: https://www.paypal.com/mx/webapps/mpp/merchant-fees
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
+      } else {
+        item.ppSuppFeesRate = 0.005;
+      }
+      break;
+
+    case "Israel":
+      // See: https://www.paypal.com/il/webapps/mpp/merchant-fees
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
+      } else if (
+        item.destination == "Canada" ||
+        europeI.includes(item.destination) ||
+        northernEurope.includes(item.destination) ||
+        item.destination == "United States"
+      ) {
+        item.ppSuppFeesRate = 0.01;
+      } else {
+        item.ppSuppFeesRate = 0.02;
       }
       break;
 
     case "Ireland":
       // See: https://www.paypal.com/ie/webapps/mpp/merchant-fees
-      if (item.destination == "Ireland") {
-        item.suppPpFeeRate = 0.0;
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
       } else if (
         europeI.includes(item.destination) ||
         northernEurope.includes(item.destination)
       ) {
-        item.suppPpFeeRate = 0.05;
+        item.ppSuppFeesRate = 0.05;
       } else {
-        item.suppPpFeeRate = 0.02;
+        item.ppSuppFeesRate = 0.02;
+      }
+      break;
+
+    case "Thailand":
+      // See: https://www.paypal.com/th/webapps/mpp/merchant-fees
+      item.ppSuppFeesRate = 0.0;
+
+    case "Russia":
+      // See: https://www.paypal.com/ru/webapps/mpp/merchant-fees
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
+      } else if (
+        item.destination == "Canada" ||
+        item.destination == "United States" ||
+        europeI.includes(item.destination)
+      ) {
+        item.ppSuppFeesRate = 0.005;
+      } else if (europeII.includes(item.destination)) {
+        item.ppSuppFeesRate = 0.01;
+      } else if (northernEurope.includes(item.destination)) {
+        item.ppSuppFeesRate = 0.004;
+      } else {
+        item.ppSuppFeesRate = 0.015;
+      }
+      break;
+
+    case "Switzerland":
+      // See: https://www.paypal.com/ch/webapps/mpp/merchant-fees
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
+      } else if (
+        eeaCountries.includes(item.destination) ||
+        ukCountries.includes(item.destination)
+      ) {
+        item.ppSuppFeesRate = 0.0129;
+      } else {
+        item.ppSuppFeesRate = 0.0199;
+      }
+      break;
+
+    case "Isle Of Man":
+    case "Guernsey ":
+    case "Jersey ":
+    case "United Kingdom":
+      // https://www.paypal.com/es/webapps/mpp/merchant-fees
+      if (item.destination == item.source) {
+        item.ppSuppFeesRate = 0.0;
+      } else if (eeaCountries.includes(item.destination)) {
+        item.ppSuppFeesRate = 0.0129;
+      } else {
+        item.ppSuppFeesRate = 0.0199;
       }
       break;
 
@@ -1109,11 +1317,8 @@ function setSupFees(item) {
     // See: https://www.paypal.com/dk/webapps/mpp/merchant-fees
     case "Finland":
     // https://www.paypal.com/fi/webapps/mpp/merchant-fees
-
-    // TODO: Need to double check.
     case "Germany":
     // https://www.paypal.com/de/webapps/mpp/merchant-fees
-
     case "Hungary":
     // https://www.paypal.com/hu/webapps/mpp/merchant-fees
     case "Italy":
@@ -1130,8 +1335,6 @@ function setSupFees(item) {
     // https://www.paypal.com/pt/webapps/mpp/merchant-fees
     case "Sweden":
     // https://www.paypal.com/se/webapps/mpp/merchant-fees
-
-    // TODO: Need to double check.
     case "Spain":
     // https://www.paypal.com/es/webapps/mpp/merchant-fees
 
@@ -1159,19 +1362,19 @@ function setSupFees(item) {
     case "Slovenia":
       if (eeaCountries.includes(item.destination)) {
         // All those coutries are also part of EEA, so domestic transaction will be catched here.
-        item.suppPpFeeRate = 0.0;
+        item.ppSuppFeesRate = 0.0;
       } else if (ukCountries.includes(item.destination)) {
-        item.suppPpFeeRate = 0.0129;
+        item.ppSuppFeesRate = 0.0129;
       } else {
-        item.suppPpFeeRate = 0.0199;
+        item.ppSuppFeesRate = 0.0199;
       }
       break;
 
     case "otherCountries":
       if (eeaCountries.includes(item.destination)) {
-        item.suppPpFeeRate = 0.0129;
+        item.ppSuppFeesRate = 0.0129;
       } else {
-        item.suppPpFeeRate = 0.0;
+        item.ppSuppFeesRate = 0.0;
       }
       break;
 
@@ -1179,7 +1382,7 @@ function setSupFees(item) {
       alert(
         "Selected country not supported. Please file a bug, this shouldn't happen."
       );
-      item.suppPpFeeRate = 0.0;
+      item.ppSuppFeesRate = 0.0;
       break;
   }
 }
@@ -1225,11 +1428,11 @@ function fillBreakdown(item) {
   );
 
   document.getElementById("ppPerc").innerHTML =
-    item.ppFeeRate + item.suppPpFeeRate;
+    item.ppBaseFeesRate + item.ppSuppFeesRate;
 
-  document.getElementById("ppBasePerc").innerHTML = item.ppFeeRate;
+  document.getElementById("ppBasePerc").innerHTML = item.ppBaseFeesRate;
 
-  document.getElementById("ppSupPerc").innerHTML = item.suppPpFeeRate;
+  document.getElementById("ppSupPerc").innerHTML = item.ppSuppFeesRate;
 
   document.getElementById("totalTransaction").innerHTML = (
     item.itemPrice +
@@ -1320,7 +1523,10 @@ function setFromCountry() {
     }
   }
 
-  if (allOtherPPCountry.includes(document.getElementById("ddlSource").value)) {
+  if (
+    allOtherPPCountry.includes(document.getElementById("ddlSource").value) ||
+    ["Mexico", "Russia"].includes(document.getElementById("ddlSource").value)
+  ) {
     document.getElementById("allOtherPPCountryNote").classList.remove("d-none");
   } else {
     document.getElementById("allOtherPPCountryNote").classList.add("d-none");
@@ -1342,7 +1548,7 @@ function calculateFees() {
     ppTotal: 0.0,
     ppFee: 0.0,
     ppFixedFees: 0.0,
-    suppPpFeeRate: 0.0,
+    ppSuppFeesRate: 0.0,
     taxes: 0.0,
     taxRate: 0.0,
   };
@@ -1353,7 +1559,7 @@ function calculateFees() {
   console.log("Source: %s\n", item.source);
   console.log("Destination: %s\n", item.destination);
 
-  item.taxes = calculateTax(item);
+  setTaxes(item);
 
   console.log("Taxe Rate: %f\n", item.taxRate);
   console.log("Taxes: %f\n", item.taxes);
@@ -1368,16 +1574,16 @@ function calculateFees() {
     item.itemPrice + item.shippingPrice + item.taxes
   );
 
-  setPpFees(item);
-  console.log("Paypal Fee Rate: %f\n", item.ppFeeRate);
+  setPaypalBaseFee(item);
+  console.log("Paypal Fee Rate: %f\n", item.ppBaseFeesRate);
   console.log("Paypal Fixed Fee: %f\n", item.ppFixedFees);
-  setSupFees(item);
-  console.log("Supplemental Paypal Fee Rate: %f\n", item.suppPpFeeRate);
+  setPaypalSupplementFee(item);
+  console.log("Supplemental Paypal Fee Rate: %f\n", item.ppSuppFeesRate);
 
-  console.log("Paypal %: %f\n", item.ppFeeRate + item.suppPpFeeRate);
+  console.log("Paypal %: %f\n", item.ppBaseFeesRate + item.ppSuppFeesRate);
   item.paypalFee =
     (item.itemPrice + item.shippingPrice + item.taxes) *
-      (item.ppFeeRate + item.suppPpFeeRate) +
+      (item.ppBaseFeesRate + item.ppSuppFeesRate) +
     item.ppFixedFees;
   console.log("Paypel Fees: %f\n", item.paypalFee);
 
