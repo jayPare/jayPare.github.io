@@ -1,9 +1,3 @@
-[submodule "discogsFees/lib/CountryCodes"]
-	path = discogsFees/lib/CountryCodes
-	url = https://github.com/jayPare/CountryCodes.git
-[submodule "lib/jquery-csv"]
-	path = discogsFees/lib/jquery-csv
-	url = https://github.com/evanplaice/jquery-csv.git
-[submodule "lib/Woocommerce-US-ZipCodes-TaxRates"]
-	path = lib/Woocommerce-US-ZipCodes-TaxRates
-	url = https://github.com/MirzaAreebBaig/Woocommerce-US-ZipCodes-TaxRates.git
+[submodule "discogsFeesCalculator"]
+	path = discogsFeesCalculator
+	url = https://github.com/jayPare/discogsFeesCalculator.git
