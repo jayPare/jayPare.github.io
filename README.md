@@ -1,6 +1,6 @@
-# My Work
+# [My Work](https://jayPare.github.io)
 
-## [Discogs Fee Calculator](https://github.com/jayPare/jayPare.github.io)
+## [Discogs Fee Calculator](https://github.com/jayPare/discogsFeesCalculator)
 
 A simple tool to help see the real amount you will get when you sell an item to a specific destination.
 
