@@ -1,3 +1,6 @@
 [submodule "discogsFeesCalculator"]
 	path = discogsFeesCalculator
 	url = https://github.com/jayPare/discogsFeesCalculator.git
+[submodule "discogsList"]
+	path = discogsList
+	url = https://github.com/jayPare/discogsList.git
